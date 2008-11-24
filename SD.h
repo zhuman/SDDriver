@@ -4,6 +4,7 @@
 /*** Configuration ***/
 // peripheral selection
 #define SD_SPI_MODULE		2	// 1 or 2
+
 //  other pin definitions are selected with the SPI module
 #define SD_PIN_CD			PORTBbits.RB5		// this is required because without it, you absolutely need a pull-up on SDI, and that's silly
 #define SD_PIN_CD_INT		CNEN1bits.CN7IE		// this may be commented out if you use a non-CN CD pin
@@ -13,6 +14,7 @@
 												//		 if you do use another CD source, use SD_Invalidate_State() when the card is ejected.
 #define SD_PIN_WP			PORTBbits.RB4		// this will be ignored if SD_HONOR_WP is not defined
 #define SD_PIN_WP_PU		CNPU1bits.CN6PUE	// use WP on a CN pin if you don't have an external pull-up, ignored if commented
+
 // software configuration
 #define SD_CD_INTERRUPT_HANDLER		// comment this if you have your own CN interrupt handler, otherwise one will be generated in the SD library
 									// if you have your own handler, be sure to add the SD_CD_Interrupt_Hook() call below to your routine
