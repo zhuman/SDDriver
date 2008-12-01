@@ -1,4 +1,4 @@
-#include <p24Hxxxx.h>
+#include "..\Z-OS\Z-OS.h"
 #include "sd.h"
 
 // SD_Sector_Write -- writes buf to the sector sector_num

@@ -6,14 +6,14 @@
 #define SD_SPI_MODULE		2	// 1 or 2
 
 //  other pin definitions are selected with the SPI module
-#define SD_PIN_CD			PORTBbits.RB5		// this is required because without it, you absolutely need a pull-up on SDI, and that's silly
-#define SD_PIN_CD_INT		CNEN1bits.CN7IE		// this may be commented out if you use a non-CN CD pin
-#define SD_PIN_CD_PU		CNPU1bits.CN7PUE	// this may be commented out if you use a non-CN CD pin
+#define SD_PIN_CD			PORTDbits.RD10		//PORTBbits.RB5		// this is required because without it, you absolutely need a pull-up on SDI, and that's silly
+//#define SD_PIN_CD_INT		CNEN1bits.CN7IE		// this may be commented out if you use a non-CN CD pin
+//#define SD_PIN_CD_PU		CNPU1bits.CN7PUE	// this may be commented out if you use a non-CN CD pin
 												// NOTE: if you don't use a CN pin for CD, you should use one of the external interrupts
 												//		 instead, to allow the SD library to automatically reset an ejected card properly.
 												//		 if you do use another CD source, use SD_Invalidate_State() when the card is ejected.
-#define SD_PIN_WP			PORTBbits.RB4		// this will be ignored if SD_HONOR_WP is not defined
-#define SD_PIN_WP_PU		CNPU1bits.CN6PUE	// use WP on a CN pin if you don't have an external pull-up, ignored if commented
+#define SD_PIN_WP			PORTBbits.RB3		//PORTBbits.RB4		// this will be ignored if SD_HONOR_WP is not defined
+#define SD_PIN_WP_PU		CNPU1bits.CN5PUE	//CNPU1bits.CN6PUE	// use WP on a CN pin if you don't have an external pull-up, ignored if commented
 
 // software configuration
 #define SD_CD_INTERRUPT_HANDLER		// comment this if you have your own CN interrupt handler, otherwise one will be generated in the SD library
@@ -192,78 +192,86 @@ typedef union {
 } SD_R7;
 
 // card specific data (CSD) register structure
-typedef struct
+typedef union
 {
-	unsigned int CSD_STRUCTURE		: 2		__attribute__ ((packed));
-	unsigned int Reserved1			: 6		__attribute__ ((packed));
-	unsigned int TAAC				: 8		__attribute__ ((packed));
-	unsigned int NSAC				: 8		__attribute__ ((packed));
-	unsigned int TRAN_SPEED			: 8		__attribute__ ((packed));
-	unsigned int CCC				: 12	__attribute__ ((packed));
-	unsigned int READ_BL_LEN		: 4		__attribute__ ((packed));
-	unsigned int READ_BL_PARTIAL	: 1		__attribute__ ((packed));
-	unsigned int WRITE_BLK_MISALIGN	: 1		__attribute__ ((packed));
-	unsigned int READ_BLK_MISALIGN	: 1		__attribute__ ((packed));
-	unsigned int DSR_IMP			: 1		__attribute__ ((packed));
-	unsigned int Reserved2			: 2		__attribute__ ((packed));
-	unsigned int C_SIZE				: 12	__attribute__ ((packed));
-	unsigned int VDD_R_CURR_MIN		: 3		__attribute__ ((packed));
-	unsigned int VDD_R_CURR_MAX		: 3		__attribute__ ((packed));
-	unsigned int VDD_W_CURR_MIN		: 3		__attribute__ ((packed));
-	unsigned int VDD_W_CURR_MAX		: 3		__attribute__ ((packed));
-	unsigned int C_SIZE_MULT		: 3		__attribute__ ((packed));
-	unsigned int ERASE_BLK_LEN		: 1		__attribute__ ((packed));
-	unsigned int SECTOR_SIZE		: 7		__attribute__ ((packed));
-	unsigned int WP_GRP_SIZE		: 7		__attribute__ ((packed));
-	unsigned int WP_GRP_ENABLE		: 1		__attribute__ ((packed));
-	unsigned int Reserved3			: 2		__attribute__ ((packed));
-	unsigned int R2W_FACTOR			: 3		__attribute__ ((packed));
-	unsigned int WRITE_BL_LEN		: 4		__attribute__ ((packed));
-	unsigned int WRITE_BL_PARTIAL	: 1		__attribute__ ((packed));
-	unsigned int Reserved4			: 5		__attribute__ ((packed));
-	unsigned int FILE_FORMAT_GRP	: 1		__attribute__ ((packed));
-	unsigned int COPY				: 1		__attribute__ ((packed));
-	unsigned int PERM_WRITE_PROTECT	: 1		__attribute__ ((packed));
-	unsigned int TMP_WRITE_PROTECT	: 1		__attribute__ ((packed));
-	unsigned int FILE_FORMAT		: 2		__attribute__ ((packed));
-	unsigned int Reserved5			: 2		__attribute__ ((packed));
-	unsigned int CRC				: 7		__attribute__ ((packed));
-	unsigned int NotUsed			: 1		__attribute__ ((packed));
+	UInt8 Bytes[16];
+	struct
+	{
+		unsigned int CSD_STRUCTURE		: 2		__attribute__ ((packed));
+		unsigned int Reserved1			: 6		__attribute__ ((packed));
+		unsigned int TAAC				: 8		__attribute__ ((packed));
+		unsigned int NSAC				: 8		__attribute__ ((packed));
+		unsigned int TRAN_SPEED			: 8		__attribute__ ((packed));
+		unsigned int CCC				: 12	__attribute__ ((packed));
+		unsigned int READ_BL_LEN		: 4		__attribute__ ((packed));
+		unsigned int READ_BL_PARTIAL	: 1		__attribute__ ((packed));
+		unsigned int WRITE_BLK_MISALIGN	: 1		__attribute__ ((packed));
+		unsigned int READ_BLK_MISALIGN	: 1		__attribute__ ((packed));
+		unsigned int DSR_IMP			: 1		__attribute__ ((packed));
+		unsigned int Reserved2			: 2		__attribute__ ((packed));
+		unsigned int C_SIZE				: 12	__attribute__ ((packed));
+		unsigned int VDD_R_CURR_MIN		: 3		__attribute__ ((packed));
+		unsigned int VDD_R_CURR_MAX		: 3		__attribute__ ((packed));
+		unsigned int VDD_W_CURR_MIN		: 3		__attribute__ ((packed));
+		unsigned int VDD_W_CURR_MAX		: 3		__attribute__ ((packed));
+		unsigned int C_SIZE_MULT		: 3		__attribute__ ((packed));
+		unsigned int ERASE_BLK_LEN		: 1		__attribute__ ((packed));
+		unsigned int SECTOR_SIZE		: 7		__attribute__ ((packed));
+		unsigned int WP_GRP_SIZE		: 7		__attribute__ ((packed));
+		unsigned int WP_GRP_ENABLE		: 1		__attribute__ ((packed));
+		unsigned int Reserved3			: 2		__attribute__ ((packed));
+		unsigned int R2W_FACTOR			: 3		__attribute__ ((packed));
+		unsigned int WRITE_BL_LEN		: 4		__attribute__ ((packed));
+		unsigned int WRITE_BL_PARTIAL	: 1		__attribute__ ((packed));
+		unsigned int Reserved4			: 5		__attribute__ ((packed));
+		unsigned int FILE_FORMAT_GRP	: 1		__attribute__ ((packed));
+		unsigned int COPY				: 1		__attribute__ ((packed));
+		unsigned int PERM_WRITE_PROTECT	: 1		__attribute__ ((packed));
+		unsigned int TMP_WRITE_PROTECT	: 1		__attribute__ ((packed));
+		unsigned int FILE_FORMAT		: 2		__attribute__ ((packed));
+		unsigned int Reserved5			: 2		__attribute__ ((packed));
+		unsigned int CRC				: 7		__attribute__ ((packed));
+		unsigned int NotUsed			: 1		__attribute__ ((packed));
+	};
 } SD_CSD_V1;
 
-typedef struct
+typedef union
 {
-	unsigned int NotUsed			: 1		__attribute__ ((packed));
-	unsigned int CRC				: 7		__attribute__ ((packed));
-	unsigned int Reserved6			: 2		__attribute__ ((packed));
-	unsigned int FILE_FORMAT		: 2		__attribute__ ((packed));
-	unsigned int TMP_WRITE_PROTECT	: 1		__attribute__ ((packed));
-	unsigned int PERM_WRITE_PROTECT	: 1		__attribute__ ((packed));
-	unsigned int COPY				: 1		__attribute__ ((packed));
-	unsigned int FILE_FORMAT_GRP	: 1		__attribute__ ((packed));
-	unsigned int Reserved5			: 5		__attribute__ ((packed));
-	unsigned int WRITE_BL_PARTIAL	: 1		__attribute__ ((packed));
-	unsigned int WRITE_BL_LEN		: 4		__attribute__ ((packed));
-	unsigned int R2W_FACTOR			: 3		__attribute__ ((packed));
-	unsigned int Reserved4			: 2		__attribute__ ((packed));
-	unsigned int WP_GRP_ENABLE		: 1		__attribute__ ((packed));
-	unsigned int WP_GRP_SIZE		: 7		__attribute__ ((packed));
-	unsigned int SECTOR_SIZE		: 7		__attribute__ ((packed));
-	unsigned int ERASE_NLK_LEN		: 1		__attribute__ ((packed));
-	unsigned int Reserved3			: 1		__attribute__ ((packed));
-	unsigned long int C_SIZE		: 22	__attribute__ ((packed));
-	unsigned int Reserved2			: 6		__attribute__ ((packed));
-	unsigned int DSR_IMP			: 1		__attribute__ ((packed));
-	unsigned int READ_BLK_MISALIGN	: 1		__attribute__ ((packed));
-	unsigned int WRITE_BLK_MISALIGN : 1		__attribute__ ((packed));
-	unsigned int READ_BL_PARTIAL	: 1		__attribute__ ((packed));
-	unsigned int READ_BL_LEN		: 4		__attribute__ ((packed));
-	unsigned int CCC				: 12	__attribute__ ((packed));
-	unsigned int TRAN_SPEED			: 8		__attribute__ ((packed));
-	unsigned int NSAC				: 8		__attribute__ ((packed));
-	unsigned int TAAC				: 8		__attribute__ ((packed));
-	unsigned int Reserved1			: 6		__attribute__ ((packed));
-	unsigned int CSD_STRUCTURE		: 2		__attribute__ ((packed));
+	UInt8 Bytes[16];
+	struct
+	{
+		unsigned int NotUsed			: 1		__attribute__ ((packed));
+		unsigned int CRC				: 7		__attribute__ ((packed));
+		unsigned int Reserved6			: 2		__attribute__ ((packed));
+		unsigned int FILE_FORMAT		: 2		__attribute__ ((packed));
+		unsigned int TMP_WRITE_PROTECT	: 1		__attribute__ ((packed));
+		unsigned int PERM_WRITE_PROTECT	: 1		__attribute__ ((packed));
+		unsigned int COPY				: 1		__attribute__ ((packed));
+		unsigned int FILE_FORMAT_GRP	: 1		__attribute__ ((packed));
+		unsigned int Reserved5			: 5		__attribute__ ((packed));
+		unsigned int WRITE_BL_PARTIAL	: 1		__attribute__ ((packed));
+		unsigned int WRITE_BL_LEN		: 4		__attribute__ ((packed));
+		unsigned int R2W_FACTOR			: 3		__attribute__ ((packed));
+		unsigned int Reserved4			: 2		__attribute__ ((packed));
+		unsigned int WP_GRP_ENABLE		: 1		__attribute__ ((packed));
+		unsigned int WP_GRP_SIZE		: 7		__attribute__ ((packed));
+		unsigned int SECTOR_SIZE		: 7		__attribute__ ((packed));
+		unsigned int ERASE_NLK_LEN		: 1		__attribute__ ((packed));
+		unsigned int Reserved3			: 1		__attribute__ ((packed));
+		unsigned long int C_SIZE		: 22	__attribute__ ((packed));
+		unsigned int Reserved2			: 6		__attribute__ ((packed));
+		unsigned int DSR_IMP			: 1		__attribute__ ((packed));
+		unsigned int READ_BLK_MISALIGN	: 1		__attribute__ ((packed));
+		unsigned int WRITE_BLK_MISALIGN : 1		__attribute__ ((packed));
+		unsigned int READ_BL_PARTIAL	: 1		__attribute__ ((packed));
+		unsigned int READ_BL_LEN		: 4		__attribute__ ((packed));
+		unsigned int CCC				: 12	__attribute__ ((packed));
+		unsigned int TRAN_SPEED			: 8		__attribute__ ((packed));
+		unsigned int NSAC				: 8		__attribute__ ((packed));
+		unsigned int TAAC				: 8		__attribute__ ((packed));
+		unsigned int Reserved1			: 6		__attribute__ ((packed));
+		unsigned int CSD_STRUCTURE		: 2		__attribute__ ((packed));
+	};
 } SD_CSD_V2;
 
 typedef union

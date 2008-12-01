@@ -1,4 +1,4 @@
-#include <p24Hxxxx.h>
+#include "..\Z-OS\Z-OS.h"
 #include "sd.h"
 
 // card state information -- stores information about the currently inserted card

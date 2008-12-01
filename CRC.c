@@ -1,3 +1,4 @@
+#include "..\Z-OS\Z-OS.h"
 #include "sd.h"
 
 /* SD CRC16 table implementation     *
@@ -70,7 +71,8 @@ unsigned char SD_CRC7_Calculate(SD_Cmd *cmd)
 
     return CRC;
 }
-
+
+
 /* Old CRC7 implementation below */
 /* CRC7 lookup table, this was generated using the following code fragment:
 
