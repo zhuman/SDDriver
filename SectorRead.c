@@ -1,5 +1,6 @@
-#include "..\Z-OS\Z-OS.h"
+#include <p24Hxxxx.h>
 #include "sd.h"
+#include <stdio.h>
 
 // SD_Sector_Read -- reads the sector sector_num from the card into buf
 int SD_Sector_Read(unsigned char *buf, unsigned long sector_num)
@@ -7,6 +8,8 @@ int SD_Sector_Read(unsigned char *buf, unsigned long sector_num)
 	SD_Cmd c;
 	SD_R1 r;
 	int ret;
+	
+	puts("SD_Sector_Read called.\r\n");
 	
 	SD_SanityCheck();
 	
@@ -50,5 +53,6 @@ int SD_Sector_Read(unsigned char *buf, unsigned long sector_num)
 	if(ret == ERR_NO_COMM)
 		SD_Invalidate_State();
 	
+	puts("SD_Sector_Read finished.\r\n");
 	return ret;
 }

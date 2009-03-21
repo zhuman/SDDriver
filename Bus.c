@@ -1,4 +1,4 @@
-#include "..\Z-OS\Z-OS.h"
+#include <p24Hxxxx.h>
 #include "sd.h"
 
 //#include <stdio.h>

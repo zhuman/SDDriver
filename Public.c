@@ -1,6 +1,6 @@
-#include "..\Z-OS\Z-OS.h"
 #include "sd.h"
 #include "public.h"
+#include "..\Z-OS\Z-OS.h"
 
 Int16 SDDeviceId;
 Int8 SectorBuffer[512]; // A sector buffer
@@ -11,9 +11,11 @@ Int16 SDRead(Int16 id, UInt64 pos, UInt8* buffer, UInt16 bufferLen)
 {
 	if (id == SDDeviceId)
 	{
+		puts("SDRead called...\r\n");
+		
 		// Divide by 512 (the number of bytes in a sector)
 		UInt64 sectorBegin = pos >> 9;
-		UInt64 i = sectorBegin;
+		UInt16 i = sectorBegin;
 		pos -= sectorBegin << 9; // pos is now the pos into the first sector needed
 		
 		while (1)
@@ -27,7 +29,6 @@ Int16 SDRead(Int16 id, UInt64 pos, UInt8* buffer, UInt16 bufferLen)
 					if (SD_Sector_Write((unsigned char*)SectorBuffer,SectorBufferNum)) return ErrorWriting;
 					BufferDirty = False;
 				}
-				printf("Loading sector %llu\r\n",i);
 				if (SD_Sector_Read((unsigned char*)SectorBuffer,i)) return ErrorReading;
 				SectorBufferNum = i;
 				BufferDirty = False;
@@ -42,6 +43,7 @@ Int16 SDRead(Int16 id, UInt64 pos, UInt8* buffer, UInt16 bufferLen)
 			buffer += bytesToCopy;
 			pos = 0;
 		}
+		puts("SDRead finished.\r\n");
 		return ErrorSuccess;
 	}
 	return ErrorUnknownDevice;
@@ -72,6 +74,7 @@ Int16 SDWrite(Int16 id, UInt64 pos, UInt8* buffer, UInt16 bufferLen)
 				if (bytesToCopy != 512 || pos != 0)
 				{
 					if (SD_Sector_Read((unsigned char*)SectorBuffer,i)) return ErrorReading;
+					puts("SD_Sector_Read returned.\r\n");
 				}
 				SectorBufferNum = i;
 				BufferDirty = False;

@@ -1,5 +1,5 @@
-#include "..\Z-OS\Z-OS.h"
 #include "SD.h"
+#include "..\Z-OS\Z-OS.h"
 
 int SD_GetTotalSize(UInt64* size)
 {
@@ -50,14 +50,9 @@ int SD_GetTotalSize(UInt64* size)
 	
 	if (csd.V1.CSD_STRUCTURE == 0)
 	{
-		UInt64 C_SIZE_MULT = (((UInt64)csd.Bytes[9] & 0b11) << 1) & ((UInt64)csd.Bytes[10] >> 7);
-		UInt64 C_SIZE = (((UInt64)csd.Bytes[6] & 0b11) << 10) & ((UInt64)csd.Bytes[7] << 2) & ((UInt64)csd.Bytes[8] >> 6);
-		UInt64 READ_BL_LEN = csd.Bytes[5] & 0b1111;
-		
-		UInt64 mult = 1 << (C_SIZE_MULT + 2);
-		UInt64 blocknr = (C_SIZE + 1) * mult;
-		UInt64 blocklen = 1 << READ_BL_LEN;
-		
+		UInt64 mult = (UInt64)1 << (UInt64)(csd.V1.C_SIZE_MULT + 2);
+		UInt64 blocklen = (UInt64)1 << (UInt64)(csd.V1.READ_BL_LEN);
+		UInt64 blocknr = (UInt64)((UInt64)csd.V1.C_SIZE + (UInt64)1) * mult;
 		puts("Reading CSD structure version 0\r\n");
 		printf("Block length: %llu\r\n",blocklen);
 		*size = blocknr * blocklen;
